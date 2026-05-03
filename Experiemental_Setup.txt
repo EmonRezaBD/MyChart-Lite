@@ -1,0 +1,173 @@
+================================================================
+GAZEPOINT GP3 HD 150Hz UX BUNDLE — STUDY SETUP SUMMARY
+For: Cognitive Costs of Deceptive UI Framing (Older Adults, n=15)
+================================================================
+
+
+1. HARDWARE REQUIREMENTS
+------------------------
+
+- PC: Intel Core i7 or faster, 16 GB RAM (8 GB minimum)
+  → Required to sustain 150 Hz processing without dropped samples.
+
+- USB 3.0 port directly on the motherboard (not a hub) for the data cable
+  → Required for 150 Hz; on USB 2.0 the tracker silently downgrades to 60 Hz.
+
+- Single monitor (the bundle is screen-based, not handheld)
+  → Phone mock-ups will be displayed as images on the desktop screen.
+
+- VESA monitor mount (preferred over the included tripod)
+  → Keeps tracker position fixed across all 15 participants for comparable pupil measurements.
+
+- Fixed-height chair (no wheels, non-adjustable mid-session)
+  → Prevents posture drift that breaks calibration mid-trial.
+
+- Caliper or ruler + printed 11 mm IPD marker
+  → Needed to convert pupil size from pixels to millimeters during IPD calibration.
+
+
+2. SOFTWARE REQUIREMENTS
+------------------------
+
+- Windows 10 or 11 (Mac and Linux are not supported)
+  → Only OS the Gazepoint drivers and software run on.
+
+- Gazepoint Control
+  → Operates the eye tracker, runs calibration, streams data via TCP/IP.
+
+- Gazepoint Analysis UX Edition
+  → Records sessions, manages projects, computes AOI statistics, exports CSV.
+
+- Python 3 with PsychoPy + socket library
+  → Drives stimulus presentation and sends trial markers (the built-in Analysis
+    cannot handle the fixation → read → prompt → decision → TLX flow).
+
+- Python (pandas, numpy, scipy) or R (lme4, lmerTest)
+  → For pupil preprocessing (blink interpolation, baseline correction) and the LMM.
+
+
+3. EXPERIMENTAL ENVIRONMENT REQUIREMENTS
+----------------------------------------
+
+- Halogen or fluorescent lighting only — no sunlight, no incandescent bulbs
+  → Sunlight and incandescent bulbs emit infrared that washes out the tracker's IR illuminators.
+
+- Constant lighting across all participants and all 18 trials
+  → Pupil size responds to light ~10× more strongly than to cognition; any
+    luminance change contaminates the pupil-as-cognitive-load measure.
+
+- Quiet room, no conversation during recording
+  → Speech and ambient noise produce arousal-driven pupil changes unrelated to framing.
+
+- Tracker positioned ~30–40 cm below eye level, ~65 cm from participant's eyes,
+  angled upward toward the face
+  → The official operating range; required for valid binocular tracking.
+
+- All 54 stimuli matched on background color, font, font size, text color,
+  text position, and word count (already 9 words each)
+  → Ensures any pupil difference reflects framing, not luminance or layout.
+
+
+4. API FIELDS, GP3 HD SIGNALS, AND HOW TO GET THEM
+--------------------------------------------------
+
+The tracker streams XML records over TCP/IP (localhost, port 4242).
+Each record looks like: <REC FPOGX="0.48" FPOGY="0.50" LPD="15.23" ... />
+
+KEY FIELDS FOR THIS STUDY:
+
+- TIME (seconds since start) and CNT (sample counter)
+  → Trial-locking and detecting dropped samples.
+
+- FPOGX, FPOGY, FPOGS, FPOGD, FPOGID, FPOGV (fixation point-of-gaze)
+  → Fixation location, start time, duration, ID, and validity flag — used for
+    Time to First Fixation, Average Fixation Duration, dwell, and revisits.
+
+- BPOGX, BPOGY, BPOGV (best raw point-of-gaze)
+  → Raw gaze samples between fixations; used to derive saccades and scan paths.
+
+- LPD, RPD (left/right pupil diameter in pixels) and LPS, RPS (scale factors)
+  → Primary cognitive-load signal; scale factor corrects for head distance.
+
+- LPUPILD, RPUPILD (pupil diameter in meters, 3D-calibrated)
+  → Same signal in physical units after IPD calibration; for cross-participant reporting.
+
+- LPV, RPV (validity flags per eye)
+  → Mark blinks and tracking losses — required for clean pupil preprocessing.
+
+- USER (custom string field)
+  → Trial markers (e.g., "P05_T03_GAIN_READ_ONSET") written by the PsychoPy
+    script so every sample in the CSV carries a trial label.
+
+HOW TO GET THESE INTO A FILE:
+
+Option A — Through Gazepoint Analysis UX (simplest):
+  Record session → Analyze Data → Export → produces XXXX-user.csv (all samples)
+  and XXXX-user-fix.csv (fixations only) in the project's \result\ folder.
+
+Option B — Through the API directly (recommended for trigger-based designs):
+  Open a TCP socket to 127.0.0.1:4242, send <SET ID="ENABLE_SEND_PUPIL_LEFT" STATE="1"/>
+  for each desired field, then <SET ID="ENABLE_SEND_DATA" STATE="1"/> to start streaming.
+  Log incoming <REC .../> strings to a CSV.
+
+
+5. CALIBRATION
+--------------
+
+- 5-point calibration in Gazepoint Control (press the Calibrate button)
+  → Standard speed/accuracy tradeoff; press '9' for 9-point if more corner accuracy is needed.
+
+- Verify accuracy: post-calibration green dot must land within ~1 cm of where
+  the participant looks at four corners + center
+  → If error is larger, press 'C' and recalibrate before recording.
+
+- Enable Auto Gain in Settings for older adults
+  → Cycles camera sensitivity to handle the dimmer pupil response common in aging eyes.
+
+- IPD calibration with 11 mm forehead marker (press 'm' during calibration)
+  → Anchors pupil-diameter measurements to real millimeters; needed for absolute
+    pupil-size reporting across participants.
+
+- Recalibrate every 6 trials (at scheduled break points)
+  → Older adults shift posture during 12-minute sessions; periodic checks prevent drift.
+
+- Coach the participant: "Look directly at each dot, do not anticipate where it
+  moves next, do not talk during calibration"
+  → Anticipation is the #1 cause of calibration failure per the official manual.
+
+
+6. SINGLE TRIAL PROCEDURE
+-------------------------
+
+Total per trial: ~11.5 seconds. Total for 18 trials: ~3.5 minutes recording.
+
+Step 1 — Fixation Cross (1.5–2.5 s)
+  → Centers gaze and provides the pre-stimulus pupil baseline window for
+    subtractive baseline correction.
+  → Send trigger: USER_DATA = "P##_T##_FRAME_FIX_ONSET"
+
+Step 2 — Text Stimulus, no buttons visible (5.0 s, fixed)
+  → The valid analysis window; identical duration across all 54 conditions
+    so pupil/fixation comparisons are not confounded by trial length.
+  → Send trigger: USER_DATA = "P##_T##_FRAME_READ_ONSET"
+
+Step 3 — Action Prompt icon appears (0.5 s)
+  → Signals "you may now choose"; separates reading effort from motor planning.
+  → Send trigger: USER_DATA = "P##_T##_FRAME_PROMPT_ONSET"
+
+Step 4 — Decision Window (self-paced, Allow / Deny click)
+  → Behavioral DV (choice + response time); secondary pupil analysis only,
+    because trial duration varies and motor activity dilates the pupil.
+  → Send trigger: USER_DATA = "P##_T##_FRAME_DECISION"
+
+Step 5 — Mini NASA-TLX (10–15 s, recording paused)
+  → Self-report mental demand and frustration; pause Gazepoint recording so
+    TLX-induced pupil dilation does not contaminate the next trial's baseline.
+
+Step 6 — Inter-Trial Interval (2.0 s blank screen, recording resumed)
+  → Lets pupil return to baseline before the next trial.
+  → Send trigger: USER_DATA = "P##_T##_FRAME_ITI"
+
+Mandatory 60 s break + recalibration check every 6 trials
+  → Older-adult fatigue management; prevents calibration drift accumulating.
+
