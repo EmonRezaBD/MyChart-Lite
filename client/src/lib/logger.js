@@ -1,16 +1,8 @@
 // client/src/lib/logger.js
-// Purpose: Thin wrapper around fetch to post trial events to the Express server.
-// All components call this instead of fetch directly.
+// Purpose: Thin wrapper to post trial events to the Express server.
 
-const SERVER_URL = "http://localhost:3001";
+const SERVER_URL = import.meta.env.DEV ? "http://localhost:3001" : ""; // empty = same origin in production
 
-/**
- * Log a trial event to the server.
- * Fails silently in the UI — logs error to console only.
- *
- * @param {string} pid - Participant ID
- * @param {object} event - Event data
- */
 export async function logEvent(pid, event) {
   try {
     await fetch(`${SERVER_URL}/trial/log`, {

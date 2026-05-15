@@ -1,13 +1,21 @@
 // client/src/pages/Welcome.jsx
-// Purpose: First screen the participant sees. Greets by name, reinforces cover story.
+// Purpose: First screen participant sees. Logs session_start.
 
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParticipant } from "../context/ParticipantContext";
+import { logEvent } from "../lib/logger";
 import Logo from "../components/Logo";
 
 function Welcome() {
   const navigate = useNavigate();
   const { participant } = useParticipant();
+
+  useEffect(() => {
+    logEvent(participant.pid, {
+      event_type: "session_start",
+    });
+  }, [participant.pid]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-6">

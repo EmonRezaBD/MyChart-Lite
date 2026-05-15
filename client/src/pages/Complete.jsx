@@ -1,11 +1,19 @@
 // client/src/pages/Complete.jsx
-// Purpose: End of session. Signals experimenter to take over.
+// Purpose: End of session. Logs session_end.
 
-import Logo from "../components/Logo";
+import { useEffect } from "react";
 import { useParticipant } from "../context/ParticipantContext";
+import { logEvent } from "../lib/logger";
+import Logo from "../components/Logo";
 
 function Complete() {
   const { participant } = useParticipant();
+
+  useEffect(() => {
+    logEvent(participant.pid, {
+      event_type: "session_end",
+    });
+  }, [participant.pid]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-6">
