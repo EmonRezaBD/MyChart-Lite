@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 
 // Replace with your actual GitHub Pages URL after deploying the sync page
-const SYNC_URL = "https://yourname.github.io/healthhub-sync";
+const SYNC_URL = "https://emonrezabd.github.io/mychart-lite-sync";
 
 function QRSync() {
   const navigate = useNavigate();
