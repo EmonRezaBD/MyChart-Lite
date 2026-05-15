@@ -1,50 +1,84 @@
-// client/src/pages/Trial.jsx
-// Purpose: Main experimental trial loop. Currently shows debug list of trials.
+// client/src/pages/Practice.jsx
+// Purpose: Attention check. Participant must click Deny to pass.
 
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParticipant } from "../context/ParticipantContext";
-import { generateTrials } from "../lib/trialGenerator";
+import { logEvent } from "../lib/logger";
+import TrialRunner from "../components/TrialRunner";
 
-function Trial() {
+const PRACTICE_TRIAL = {
+  trialNum: 0,
+  task: "practice",
+  frame: "attention_check",
+  text: "To confirm the system is working, please click Deny on this screen.",
+};
+
+function Practice() {
   const navigate = useNavigate();
   const { participant } = useParticipant();
-  const trials = generateTrials(participant.pid, participant.mappingRow);
+  const [attempt, setAttempt] = useState(1);
+  const [showRetry, setShowRetry] = useState(false);
+
+  const handleComplete = (result) => {
+    if (!result) return; // ITI finished
+
+    logEvent(participant.pid, {
+      trial_num: 0,
+      task: "practice",
+      frame: "attention_check",
+      event_type: "attention_check",
+      choice: result.choice,
+      rt_ms: result.rt_ms,
+    });
+
+    if (result.choice === "deny") {
+      // Passed — move to real trials
+      navigate("/trial");
+    } else if (attempt >= 2) {
+      // Failed twice — flag and continue
+      logEvent(participant.pid, {
+        event_type: "attention_check_failed",
+      });
+      navigate("/trial");
+    } else {
+      // Failed once — retry
+      setAttempt(2);
+      setShowRetry(true);
+    }
+  };
+
+  if (showRetry) {
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center px-6">
+        <div className="w-full max-w-sm rounded-xl bg-white p-8 shadow-md text-center">
+          <p className="text-lg font-semibold text-ink">
+            Oops — please read the instruction carefully.
+          </p>
+          <p className="mt-2 text-sm text-ink-muted">
+            The message asked you to click{" "}
+            <span className="font-bold text-red-500">Deny</span>. Let's try once
+            more.
+          </p>
+          <button
+            type="button"
+            onClick={() => setShowRetry(false)}
+            className="mt-6 rounded-lg bg-brand-500 px-6 py-3 text-white font-medium transition hover:bg-brand-600"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="flex min-h-screen flex-col items-center px-6 py-10">
-      <h1 className="text-2xl font-bold text-brand-700">
-        Trial list for {participant.pid} (row {participant.mappingRow})
-      </h1>
-      <p className="mt-1 text-sm text-ink-muted">
-        Debug view — real trial runner comes in next step.
-      </p>
-
-      <ol className="mt-6 w-full max-w-2xl space-y-2">
-        {trials.map((t) => (
-          <li
-            key={t.trialNum}
-            className="rounded-md border border-gray-200 bg-white p-3 text-sm"
-          >
-            <span className="font-mono text-ink-muted">#{t.trialNum}</span>{" "}
-            <span className="font-medium text-brand-700">{t.task}</span>{" "}
-            <span className="rounded bg-gray-100 px-2 py-0.5 text-xs">
-              {t.frame}
-            </span>
-            <div className="mt-1 text-ink">{t.text}</div>
-          </li>
-        ))}
-      </ol>
-
-      <button
-        type="button"
-        // onClick={() => navigate("/complete")}
-        onClick={() => navigate("/trial")}
-        className="mt-8 rounded-lg bg-brand-500 px-6 py-3 text-white font-medium shadow-sm transition hover:bg-brand-600"
-      >
-        Skip to Complete →
-      </button>
-    </div>
+    <TrialRunner
+      key={attempt}
+      trial={PRACTICE_TRIAL}
+      onComplete={handleComplete}
+    />
   );
 }
 
-export default Trial;
+export default Practice;
