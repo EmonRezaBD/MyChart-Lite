@@ -1,25 +1,38 @@
-import Logo from "./components/Logo";
+// client/src/App.jsx
+// Purpose: Root component. Defines the participant's flow as routes.
+
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+
+import Welcome from "./pages/Welcome";
+import QRSync from "./pages/QRSync";
+import Synced from "./pages/Synced";
+import Instructions from "./pages/Instructions";
+import Practice from "./pages/Practice";
+import Trial from "./pages/Trial";
+import Complete from "./pages/Complete";
 
 /**
- * Root component for MyChart-Lite.
- * Currently displays a brand-test screen to verify Tailwind + theming.
- * Will be replaced by routing in a later step.
+ * Participant flow:
+ *   /welcome → /qr → /synced → /instructions → /practice → /trial → /complete
+ *
+ * Root path "/" redirects to /welcome.
+ * Any unknown path also falls back to /welcome (defensive default).
  */
 function App() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-surface px-6">
-      <Logo size={64} />
-      <h1 className="mt-6 text-4xl font-bold text-brand-700">MyChart-Lite</h1>
-      <p className="mt-2 text-lg text-ink-muted">
-        Your personal healthcare companion
-      </p>
-      <button
-        type="button"
-        className="mt-10 rounded-lg bg-brand-500 px-6 py-3 text-white font-medium shadow-sm transition hover:bg-brand-600 active:bg-brand-700"
-      >
-        Get Started
-      </button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Navigate to="/welcome" replace />} />
+        <Route path="/welcome" element={<Welcome />} />
+        <Route path="/qr" element={<QRSync />} />
+        <Route path="/synced" element={<Synced />} />
+        <Route path="/instructions" element={<Instructions />} />
+        <Route path="/practice" element={<Practice />} />
+        <Route path="/trial" element={<Trial />} />
+        <Route path="/complete" element={<Complete />} />
+        <Route path="*" element={<Navigate to="/welcome" replace />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
