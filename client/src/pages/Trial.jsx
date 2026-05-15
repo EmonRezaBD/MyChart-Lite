@@ -1,23 +1,53 @@
 // client/src/pages/Trial.jsx
-// Purpose: Main experimental trial loop. Runs 12 trials per participant.
+// Purpose: Manages the 12-trial loop. Passes one trial at a time to TrialRunner.
 
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useParticipant } from "../context/ParticipantContext";
+import { generateTrials } from "../lib/trialGenerator";
+import TrialRunner from "../components/TrialRunner";
 
 function Trial() {
   const navigate = useNavigate();
+  const { participant } = useParticipant();
+
+  const [trials] = useState(() =>
+    generateTrials(participant.pid, participant.mappingRow),
+  );
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [results, setResults] = useState([]);
+
+  const handleTrialComplete = (result) => {
+    // result is null after the ITI blank — means move on
+    if (result) {
+      setResults((prev) => [
+        ...prev,
+        {
+          trialNum: trials[currentIndex].trialNum,
+          task: trials[currentIndex].task,
+          frame: trials[currentIndex].frame,
+          choice: result.choice,
+          rt_ms: result.rt_ms,
+          timestamp: Date.now(),
+        },
+      ]);
+    } else {
+      // ITI finished — advance to next trial or complete
+      const next = currentIndex + 1;
+      if (next >= trials.length) {
+        navigate("/complete", { state: { results } });
+      } else {
+        setCurrentIndex(next);
+      }
+    }
+  };
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center px-6">
-      <h1 className="text-3xl font-bold text-brand-700">Trial</h1>
-      <p className="mt-2 text-ink-muted">Placeholder — Main trial loop</p>
-      <button
-        type="button"
-        onClick={() => navigate("/complete")}
-        className="mt-8 rounded-lg bg-brand-500 px-6 py-3 text-white font-medium shadow-sm transition hover:bg-brand-600"
-      >
-        Continue →
-      </button>
-    </div>
+    <TrialRunner
+      key={currentIndex} // forces full remount on each new trial
+      trial={trials[currentIndex]}
+      onComplete={handleTrialComplete}
+    />
   );
 }
 

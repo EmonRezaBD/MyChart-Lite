@@ -37,7 +37,8 @@ function Trial() {
 
       <button
         type="button"
-        onClick={() => navigate("/complete")}
+        // onClick={() => navigate("/complete")}
+        onClick={() => navigate("/trial")}
         className="mt-8 rounded-lg bg-brand-500 px-6 py-3 text-white font-medium shadow-sm transition hover:bg-brand-600"
       >
         Skip to Complete →
