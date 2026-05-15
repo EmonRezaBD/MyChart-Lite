@@ -2,6 +2,10 @@
 // Purpose: Runs one trial through all phases with precise timing.
 // Props: trial {trialNum, task, frame, text}, onComplete(result)
 
+// Add this import at the top of TrialRunner.jsx
+import { logEvent } from "../lib/logger";
+import { useParticipant } from "../context/ParticipantContext";
+
 import { useEffect, useState, useRef } from "react";
 import { TIMING } from "../config/framings";
 
@@ -128,6 +132,7 @@ const TASK_ICONS = {
 };
 
 function TrialRunner({ trial, onComplete }) {
+  const { participant } = useParticipant();
   const [phase, setPhase] = useState(PHASES.FIXATION);
   const responseStartRef = useRef(null);
   const stimulusOnsetRef = useRef(null);
@@ -137,6 +142,12 @@ function TrialRunner({ trial, onComplete }) {
     let timer;
 
     if (phase === PHASES.FIXATION) {
+      logEvent(participant.pid, {
+        trial_num: trial.trialNum,
+        task: trial.task,
+        frame: trial.frame,
+        event_type: "fixation_onset",
+      });
       const jitter =
         TIMING.fixationMinMs +
         Math.random() * (TIMING.fixationMaxMs - TIMING.fixationMinMs);
@@ -147,14 +158,35 @@ function TrialRunner({ trial, onComplete }) {
     }
 
     if (phase === PHASES.STIMULUS) {
+      logEvent(participant.pid, {
+        trial_num: trial.trialNum,
+        task: trial.task,
+        frame: trial.frame,
+        event_type: "stimulus_onset",
+      });
       timer = setTimeout(() => setPhase(PHASES.PROMPT), TIMING.stimulusMs);
     }
 
     if (phase === PHASES.PROMPT) {
+      logEvent(participant.pid, {
+        trial_num: trial.trialNum,
+        task: trial.task,
+        frame: trial.frame,
+        event_type: "prompt_onset",
+      });
       timer = setTimeout(() => {
         responseStartRef.current = performance.now();
         setPhase(PHASES.RESPONSE);
       }, TIMING.promptMs);
+    }
+
+    if (phase === PHASES.RESPONSE) {
+      logEvent(participant.pid, {
+        trial_num: trial.trialNum,
+        task: trial.task,
+        frame: trial.frame,
+        event_type: "response_onset",
+      });
     }
 
     if (phase === PHASES.ITI) {
@@ -162,13 +194,20 @@ function TrialRunner({ trial, onComplete }) {
     }
 
     return () => clearTimeout(timer);
-  }, [phase, onComplete]);
+  }, [phase, onComplete, participant.pid, trial]);
 
   // Participant clicks Allow or Deny
   const handleChoice = (choice) => {
     const rt = Math.round(performance.now() - responseStartRef.current);
+    logEvent(participant.pid, {
+      trial_num: trial.trialNum,
+      task: trial.task,
+      frame: trial.frame,
+      event_type: "response",
+      choice,
+      rt_ms: rt,
+    });
     setPhase(PHASES.ITI);
-    // Pass result up — parent logs it
     onComplete({ choice, rt_ms: rt, stimulusOnset: stimulusOnsetRef.current });
   };
 
