@@ -12,10 +12,10 @@ function Welcome() {
   const { participant } = useParticipant();
 
   useEffect(() => {
-    logEvent(participant.pid, {
+    logEvent(participant.pid, participant.ageGroup, {
       event_type: "session_start",
     });
-  }, [participant.pid]);
+  }, [participant.pid, participant.ageGroup]);
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-center px-6">

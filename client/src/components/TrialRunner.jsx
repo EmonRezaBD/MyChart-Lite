@@ -142,7 +142,7 @@ function TrialRunner({ trial, onComplete }) {
     let timer;
 
     if (phase === PHASES.FIXATION) {
-      logEvent(participant.pid, {
+      logEvent(participant.pid, participant.ageGroup, {
         trial_num: trial.trialNum,
         task: trial.task,
         frame: trial.frame,
@@ -158,7 +158,7 @@ function TrialRunner({ trial, onComplete }) {
     }
 
     if (phase === PHASES.STIMULUS) {
-      logEvent(participant.pid, {
+      logEvent(participant.pid, participant.ageGroup, {
         trial_num: trial.trialNum,
         task: trial.task,
         frame: trial.frame,
@@ -168,7 +168,7 @@ function TrialRunner({ trial, onComplete }) {
     }
 
     if (phase === PHASES.PROMPT) {
-      logEvent(participant.pid, {
+      logEvent(participant.pid, participant.ageGroup, {
         trial_num: trial.trialNum,
         task: trial.task,
         frame: trial.frame,
@@ -181,7 +181,7 @@ function TrialRunner({ trial, onComplete }) {
     }
 
     if (phase === PHASES.RESPONSE) {
-      logEvent(participant.pid, {
+      logEvent(participant.pid, participant.ageGroup, {
         trial_num: trial.trialNum,
         task: trial.task,
         frame: trial.frame,
@@ -199,7 +199,7 @@ function TrialRunner({ trial, onComplete }) {
   // Participant clicks Allow or Deny
   const handleChoice = (choice) => {
     const rt = Math.round(performance.now() - responseStartRef.current);
-    logEvent(participant.pid, {
+    logEvent(participant.pid, participant.ageGroup, {
       trial_num: trial.trialNum,
       task: trial.task,
       frame: trial.frame,

@@ -23,7 +23,7 @@ function Practice() {
   const handleComplete = (result) => {
     if (!result) return; // ITI finished
 
-    logEvent(participant.pid, {
+    logEvent(participant.pid, participant.ageGroup, {
       trial_num: 0,
       task: "practice",
       frame: "attention_check",
@@ -37,7 +37,7 @@ function Practice() {
       navigate("/trial");
     } else if (attempt >= 2) {
       // Failed twice — flag and continue
-      logEvent(participant.pid, {
+      logEvent(participant.pid, participant.ageGroup, {
         event_type: "attention_check_failed",
       });
       navigate("/trial");

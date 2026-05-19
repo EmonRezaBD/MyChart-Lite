@@ -28,7 +28,9 @@ app.post("/trial/log", (req, res) => {
     return res.status(400).json({ error: "pid and event_type are required" });
   }
 
-  const file = path.join(DATA_DIR, `${pid}_trials.csv`);
+  // const file = path.join(DATA_DIR, `${pid}_trials.csv`);
+  const ageGroup = req.body.age_group || "unknown";
+  const file = path.join(DATA_DIR, `${pid}_${ageGroup}_trials.csv`);
   if (!fs.existsSync(file)) fs.writeFileSync(file, CSV_HEADER);
 
   const row =
