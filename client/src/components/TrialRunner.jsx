@@ -35,7 +35,7 @@ const TASK_ICONS = {
       fill="none"
       stroke="currentColor"
       strokeWidth={1.5}
-      className="h-10 w-10"
+      className="h-8 w-8"
     >
       <path
         strokeLinecap="round"
@@ -55,7 +55,7 @@ const TASK_ICONS = {
       fill="none"
       stroke="currentColor"
       strokeWidth={1.5}
-      className="h-10 w-10"
+      className="h-8 w-8"
     >
       <path
         strokeLinecap="round"
@@ -70,7 +70,7 @@ const TASK_ICONS = {
       fill="none"
       stroke="currentColor"
       strokeWidth={1.5}
-      className="h-10 w-10"
+      className="h-8 w-8"
     >
       <path
         strokeLinecap="round"
@@ -85,7 +85,7 @@ const TASK_ICONS = {
       fill="none"
       stroke="currentColor"
       strokeWidth={1.5}
-      className="h-10 w-10"
+      className="h-8 w-8"
     >
       <path
         strokeLinecap="round"
@@ -100,7 +100,7 @@ const TASK_ICONS = {
       fill="none"
       stroke="currentColor"
       strokeWidth={1.5}
-      className="h-10 w-10"
+      className="h-8 w-8"
     >
       <path
         strokeLinecap="round"
@@ -120,7 +120,7 @@ const TASK_ICONS = {
       fill="none"
       stroke="currentColor"
       strokeWidth={1.5}
-      className="h-10 w-10"
+      className="h-8 w-8"
     >
       <path
         strokeLinecap="round"
@@ -232,40 +232,46 @@ function TrialRunner({ trial, onComplete }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 px-6">
       {/* Phone-frame wrapper */}
-      <div className="w-full max-w-sm">
+      {/* <div className="w-full max-w-sm"> */}
+      <div className="w-full max-w-lg">
         {/* Permission dialog card */}
         <div className="overflow-hidden rounded-2xl bg-white shadow-xl">
           {/* App bar */}
           <div className="flex items-center gap-3 border-b border-gray-100 px-5 py-4">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-500 text-white">
+            {/* <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-brand-500 text-white"> */}
+            <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-brand-500 text-white">
               {TASK_ICONS[trial.task]}
             </div>
             <div>
-              <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted">
+              {/* <p className="text-xs font-semibold uppercase tracking-wide text-ink-muted"> */}
+              <p className="text-sm font-semibold uppercase tracking-wide text-ink-muted">
                 MyChart-Lite
               </p>
-              <p className="text-sm font-semibold text-ink">
+              {/* <p className="text-sm font-semibold text-ink"> */}
+              <p className="text-base font-semibold text-ink">
                 {TASK_LABELS[trial.task]}
               </p>
             </div>
           </div>
 
           {/* Framing text — the experimental stimulus */}
-          <div className="px-5 py-6">
-            <p className="text-center text-base leading-relaxed text-ink">
+          {/* <div className="px-5 py-6"> */}
+          <div className="px-8 py-10">
+            {/* <p className="text-center text-base leading-relaxed text-ink"> */}
+            <p className="text-center text-xl leading-relaxed text-ink">
               {trial.text}
             </p>
           </div>
 
           {/* Footer: hidden during stimulus, icon during prompt, buttons during response */}
-          <div className="min-h-[72px] border-t border-gray-100">
+          <div className="min-h-[80px] border-t border-gray-100">
             {phase === PHASES.STIMULUS && (
               // Invisible placeholder — keeps card height stable
-              <div className="h-[72px]" />
+              <div className="h-[80px]" />
             )}
 
             {phase === PHASES.PROMPT && (
-              <div className="flex h-[72px] items-center justify-center">
+              <div className="flex h-[80px] items-center justify-center">
                 <span className="animate-pulse text-2xl">👆</span>
               </div>
             )}
@@ -275,14 +281,16 @@ function TrialRunner({ trial, onComplete }) {
                 <button
                   type="button"
                   onClick={() => handleChoice("deny")}
-                  className="py-4 text-sm font-semibold text-red-500 transition hover:bg-red-50 active:bg-red-100"
+                  // className="py-4 text-sm font-semibold text-red-500 transition hover:bg-red-50 active:bg-red-100"
+                  className="py-5 text-sm font-semibold text-ink transition hover:bg-gray-50 active:bg-gray-100"
                 >
                   Deny
                 </button>
                 <button
                   type="button"
                   onClick={() => handleChoice("allow")}
-                  className="py-4 text-sm font-semibold text-brand-500 transition hover:bg-brand-50 active:bg-brand-100"
+                  // className="py-4 text-sm font-semibold text-brand-500 transition hover:bg-brand-50 active:bg-brand-100"
+                  className="py-5 text-sm font-semibold text-ink transition hover:bg-gray-50 active:bg-gray-100"
                 >
                   Allow
                 </button>
@@ -292,7 +300,8 @@ function TrialRunner({ trial, onComplete }) {
         </div>
 
         {/* Trial counter — small, unobtrusive */}
-        <p className="mt-4 text-center text-xs text-ink-muted">
+        {/* <p className="mt-4 text-center text-xs text-ink-muted"> */}
+        <p className="mt-4 text-center text-base text-ink-muted">
           Setting {trial.trialNum} of 12
         </p>
       </div>

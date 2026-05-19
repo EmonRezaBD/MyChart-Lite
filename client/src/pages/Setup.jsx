@@ -17,7 +17,11 @@ function Setup() {
 
   const handleStart = (e) => {
     e.preventDefault();
-    if (!pid.trim() || !name.trim()) return;
+    if (!/^P\d{3,4}$/.test(pid)) {
+      alert("Participant ID must be P followed by 3-4 digits (e.g., P001)");
+      return;
+    }
+    if (!name.trim()) return;
     setParticipant({
       pid: pid.trim(),
       name: name.trim(),
@@ -44,11 +48,20 @@ function Setup() {
           <input
             type="text"
             value={pid}
-            onChange={(e) => setPid(e.target.value)}
+            onChange={(e) => {
+              const val = e.target.value.toUpperCase();
+              if (/^P?\d{0,4}$/.test(val) || val === "") {
+                setPid(val);
+              }
+            }}
             placeholder="P001"
-            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-brand-500 focus:outline-none"
+            maxLength={5}
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
             required
           />
+          <span className="mt-1 block text-xs text-ink-muted">
+            Format: P followed by 3–4 digits (e.g., P001, P030)
+          </span>
         </label>
 
         <label className="mt-4 block">
@@ -58,7 +71,7 @@ function Setup() {
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Mary"
-            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-brand-500 focus:outline-none"
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
             required
           />
         </label>
@@ -68,10 +81,10 @@ function Setup() {
           <select
             value={ageGroup}
             onChange={(e) => setAgeGroup(e.target.value)}
-            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-brand-500 focus:outline-none"
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
           >
-            <option value="younger">Younger (18–59)</option>
-            <option value="older">Older (60+)</option>
+            <option value="younger">Younger</option>
+            <option value="older">Older</option>
           </select>
         </label>
 
@@ -80,7 +93,7 @@ function Setup() {
           <select
             value={mappingRow}
             onChange={(e) => setMappingRow(e.target.value)}
-            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 focus:border-brand-500 focus:outline-none"
+            className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
           >
             {[0, 1, 2, 3, 4, 5].map((row) => (
               <option key={row} value={row}>

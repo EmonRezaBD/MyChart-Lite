@@ -1,0 +1,6 @@
+timestamp_ms,trial_num,task,frame,event_type,choice,rt_ms
+1779216358678,,,,session_start,,
+1779216392482,0,practice,attention_check,fixation_onset,,
+1779216394135,0,practice,attention_check,stimulus_onset,,
+1779216399144,0,practice,attention_check,prompt_onset,,
+1779216399655,0,practice,attention_check,response_onset,,

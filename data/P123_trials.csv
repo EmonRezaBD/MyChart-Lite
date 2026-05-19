@@ -1,0 +1,17 @@
+timestamp_ms,trial_num,task,frame,event_type,choice,rt_ms
+1779217635126,,,,session_start,,
+1779217639496,0,practice,attention_check,fixation_onset,,
+1779217641757,0,practice,attention_check,stimulus_onset,,
+1779217646772,0,practice,attention_check,prompt_onset,,
+1779217647278,0,practice,attention_check,response_onset,,
+1779217648999,0,practice,attention_check,response,deny,1716
+1779217649002,0,practice,attention_check,attention_check,deny,1716
+1779217649005,1,contacts,neutral,fixation_onset,,
+1779217650518,1,contacts,neutral,stimulus_onset,,
+1779217655534,1,contacts,neutral,prompt_onset,,
+1779217656045,1,contacts,neutral,response_onset,,
+1779217656858,1,contacts,neutral,response,deny,814
+1779217658870,2,health_data,neutral,fixation_onset,,
+1779217660501,2,health_data,neutral,stimulus_onset,,
+1779217666276,2,health_data,neutral,prompt_onset,,
+1779217667277,2,health_data,neutral,response_onset,,

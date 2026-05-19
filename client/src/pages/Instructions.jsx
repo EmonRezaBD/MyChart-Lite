@@ -22,12 +22,12 @@ function Instructions() {
             <span className="font-semibold">
               read the description carefully
             </span>
-            , then choose{" "}
-            <span className="font-semibold text-brand-500">Allow</span> or{" "}
-            <span className="font-semibold text-red-500">Deny</span> based on
-            what you'd actually prefer.
+            , then choose <span className="font-semibold">Allow</span> or{" "}
+            <span className="font-semibold">Deny</span> based on what you'd
+            actually prefer.
           </p>
-          <p className="text-ink-muted text-sm">
+          {/* <p className="text-ink-muted text-sm"> */}
+          <p className="text-ink-muted text-base">
             A small "+" will appear before each setting to help you focus.
             Buttons will appear after a short reading period.
           </p>
