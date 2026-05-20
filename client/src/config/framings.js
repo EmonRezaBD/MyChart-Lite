@@ -1,41 +1,48 @@
 // client/src/config/framings.js
-// Purpose: Source of truth for all stimulus text, Latin-square mappings, and timing.
+// Purpose: Source of truth for stimulus text, Latin-square mappings, and timing.
 
 /**
  * 6 privacy tasks × 3 frames = 18 stimulus strings.
- * Source: Experimental Manipulation (By Claude Opus 4.7), LSU slide.
- * Each sentence kept concise to control reading complexity for eye tracking.
+ * All three frames within a task are matched on word count to control
+ * reading time. Word counts may vary across tasks (this is fine —
+ * comparisons happen within-task, not between tasks).
  */
 export const TASKS = {
   location: {
-    neutral: "Allow location access so the app records your location.",
-    gain: "Allow location access to speed help during medical emergencies.",
-    loss: "Block location access and delay help during medical emergencies.",
+    // 10 words each
+    neutral: "Allow location access so the app records your current location.",
+    gain: "Allow location access to speed up help during medical emergencies.",
+    loss: "Allow location access to avoid delays during medical emergencies today.",
   },
   health_data: {
+    // 9 words each
     neutral: "Allow records access so the app stores your records.",
     gain: "Allow records access to improve treatment accuracy during care.",
-    loss: "Block records access and reduce treatment accuracy during care.",
+    loss: "Allow records access to avoid treatment errors during care.",
   },
   contacts: {
+    // 9 words each
     neutral: "Allow contacts access so the app reads your contacts.",
-    gain: "Allow contacts access to share test results during care.",
-    loss: "Block contacts access and withhold test results during care.",
+    gain: "Allow contacts access to share test results with doctors.",
+    loss: "Allow contacts access to avoid missing results during care.",
   },
   microphone: {
+    // 9 words each
     neutral: "Allow microphone access so the app records your voice.",
     gain: "Allow microphone access to enable voice help during emergencies.",
-    loss: "Block microphone access and disable voice help during emergencies.",
+    loss: "Allow microphone access to avoid voice failures during emergencies.",
   },
   camera: {
+    // 9 words each
     neutral: "Allow camera access so the app uses your camera.",
     gain: "Allow camera access to enable doctor video visits anytime.",
-    loss: "Block camera access and prevent doctor video visits anytime.",
+    loss: "Allow camera access to avoid missed doctor video visits.",
   },
   photos: {
-    neutral: "Allow photo access so the app opens your photos.",
-    gain: "Allow photo access to show symptoms to your doctor.",
-    loss: "Block photo access and hide symptoms from your doctor.",
+    // 10 words each
+    neutral: "Allow photo access so the app opens your saved photos.",
+    gain: "Allow photo access to share symptoms with your medical team.",
+    loss: "Allow photo access to avoid hiding symptoms from your doctor.",
   },
 };
 
