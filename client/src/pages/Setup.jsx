@@ -2,7 +2,7 @@
 // Purpose: Experimenter enters participant ID, name, age group, mapping row
 // before handing the screen to the participant. Not seen by participants.
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useParticipant } from "../context/ParticipantContext";
 
@@ -15,10 +15,19 @@ function Setup() {
   const [ageGroup, setAgeGroup] = useState("younger");
   const [mappingRow, setMappingRow] = useState(0);
 
+  // Auto-select age group based on PID prefix
+  useEffect(() => {
+    if (pid.startsWith("OA")) setAgeGroup("older");
+    else if (pid.startsWith("YA")) setAgeGroup("younger");
+    else if (pid.startsWith("AP")) setAgeGroup("aphasia");
+  }, [pid]);
+
   const handleStart = (e) => {
     e.preventDefault();
-    if (!/^P\d{3,4}$/.test(pid)) {
-      alert("Participant ID must be P followed by 3-4 digits (e.g., P001)");
+    if (!/^(OA|YA|AP)\d{2,4}$/.test(pid)) {
+      alert(
+        "Participant ID must be OA, YA, or AP followed by 2-4 digits (e.g., OA01, YA01, AP01)",
+      );
       return;
     }
     if (!name.trim()) return;
@@ -50,17 +59,19 @@ function Setup() {
             value={pid}
             onChange={(e) => {
               const val = e.target.value.toUpperCase();
-              if (/^P?\d{0,4}$/.test(val) || val === "") {
+              // Allow typing progressively: O, OA, OA0, OA01, etc.
+              if (/^(O|OA|Y|YA|A|AP)?(\d{0,4})?$/.test(val)) {
                 setPid(val);
               }
             }}
-            placeholder="P001"
-            maxLength={5}
+            placeholder="OA01"
+            maxLength={6}
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
             required
           />
           <span className="mt-1 block text-xs text-ink-muted">
-            Format: P followed by 3–4 digits (e.g., P001, P030)
+            Format: OA, YA, or AP followed by 2–4 digits (e.g., OA01, YA01,
+            AP01)
           </span>
         </label>
 
@@ -83,8 +94,9 @@ function Setup() {
             onChange={(e) => setAgeGroup(e.target.value)}
             className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:border-brand-500 focus:outline-none"
           >
-            <option value="younger">Younger</option>
-            <option value="older">Older</option>
+            <option value="younger">Younger Adults</option>
+            <option value="older">Older Adults</option>
+            <option value="aphasia">Aphasia Patient</option>
           </select>
         </label>
 
