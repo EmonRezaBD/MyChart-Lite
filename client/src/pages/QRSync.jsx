@@ -5,7 +5,8 @@ import { useNavigate } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 
 // Replace with your actual GitHub Pages URL after deploying the sync page
-const SYNC_URL = "https://emonrezabd.github.io/mychart-lite-sync";
+// const SYNC_URL = "https://emonrezabd.github.io/mychart-lite-sync"; //Real URL for deployed sync page
+const SYNC_URL = "https://bit.ly/mychart-lite-synced"; // Shortened URL for easier QR code scanning, to decept users
 
 function QRSync() {
   const navigate = useNavigate();
