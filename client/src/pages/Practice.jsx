@@ -7,10 +7,22 @@ import { useParticipant } from "../context/ParticipantContext";
 import { logEvent } from "../lib/logger";
 import TrialRunner from "../components/TrialRunner";
 
+// const PRACTICE_TRIAL = {
+//   trialNum: 0,
+//   task: "practice",
+//   frame: "attention_check",
+//   text: "To confirm the system is working, please click Deny on this screen.",
+// };
+
+// client/src/pages/Practice.jsx — replace PRACTICE_TRIAL with:
+
 const PRACTICE_TRIAL = {
   trialNum: 0,
   task: "practice",
   frame: "attention_check",
+  prefix: "To confirm the system is working,",
+  keyword: "please click Deny",
+  suffix: "on this screen",
   text: "To confirm the system is working, please click Deny on this screen.",
 };
 

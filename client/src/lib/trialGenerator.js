@@ -43,11 +43,23 @@ export function generateTrials(pid, mappingRow) {
   const trials = [];
   for (const task of TASK_NAMES) {
     for (const frame of mapping[task]) {
-      trials.push({
-        task,
-        frame,
-        text: TASKS[task][frame],
-      });
+      // trials.push({
+      //   task,
+      //   frame,
+      //   text: TASKS[task][frame],
+      // });
+      const framing = TASKS[task][frame];
+        trials.push({
+          task,
+          frame,
+          prefix: framing.prefix,
+          keyword: framing.keyword,
+          suffix: framing.suffix,
+          // Full text for CSV logging / backward compat
+          text: [framing.prefix, framing.keyword, framing.suffix]
+            .filter(Boolean)
+            .join(" "),
+        });
     }
   }
 

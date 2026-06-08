@@ -256,12 +256,17 @@ function TrialRunner({ trial, onComplete }) {
 
           {/* Framing text — the experimental stimulus */}
           {/* <div className="px-5 py-6"> */}
-          <div className="px-8 py-10">
-            {/* <p className="text-center text-base leading-relaxed text-ink"> */}
-            <p className="text-center text-xl leading-relaxed text-ink">
-              {trial.text}
+        <div className="px-8 py-10">
+          {/* Three-line layout locks keyword at a fixed vertical position
+              for clean AOI definition in Gazepoint Analysis */}
+          <div className="space-y-2 text-center text-xl leading-relaxed text-ink">
+            <p className="min-h-[1.75em]">{trial.prefix}</p>
+            <p className="min-h-[1.75em]" data-aoi="keyword">
+              {trial.keyword}
             </p>
+            <p className="min-h-[1.75em]">{trial.suffix || '\u00A0'}</p>
           </div>
+        </div>
 
           {/* Footer: hidden during stimulus, icon during prompt, buttons during response */}
           <div className="min-h-[80px] border-t border-gray-100">
