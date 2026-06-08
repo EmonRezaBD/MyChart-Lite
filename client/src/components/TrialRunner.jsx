@@ -215,7 +215,7 @@ function TrialRunner({ trial, onComplete }) {
   if (phase === PHASES.FIXATION) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-surface">
-        <span className="select-none text-6xl font-light text-ink-muted">
+        <span className="select-none text-9xl font-bold text-ink">
           +
         </span>
       </div>
